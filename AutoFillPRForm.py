@@ -16,8 +16,25 @@ import time
 class AutoFillPRForm():
     def __init__(self, url):
         self.__url = url
+        self.__driver = webdriver.Chrome() #create a web driver of chrome browser
+    
+    def AccessURL(self):
+        # access url and open a chrome browser
+        self.__driver.get(self.__url)
         
-    def GetDropDownList_XPath(__driver, __XPath):
+        # wait for loading completedly
+        try:
+            WebDriverWait(self.__driver, 20).until(
+                EC.visibility_of_element_located((By.XPATH, "//div[contains(text(), 'Loading...')]"))
+            )
+            WebDriverWait(self.__driver, 20).until_not(
+                EC.visibility_of_element_located((By.XPATH, "//div[contains(text(), 'Loading...')]"))
+            )
+        except:
+
+
+
+    def GetDropDownList_XPath(self, __driver, __XPath):
         time.sleep(3)
         __driver.implicitly_wait(10)
         __dropDownList = __driver.find_element_by_xpath(__XPath)
@@ -38,7 +55,7 @@ class AutoFillPRForm():
         time.sleep(0.5)
         __textBox.send_keys(Keys.ENTER)
 
-    def applyForm():
+    def applyForm(self):
         url = "https://shiwpa-etrex9.garmin.com:9099/FINSystem/PrApplyInit.action"
 
         # headless = webdriver.ChromeOptions()
