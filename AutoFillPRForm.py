@@ -24,15 +24,108 @@ class AutoFillPRForm():
         
         # wait for loading completedly
         try:
+            self.__driver.implicitly_wait(20)
             WebDriverWait(self.__driver, 20).until(
                 EC.visibility_of_element_located((By.XPATH, "//div[contains(text(), 'Loading...')]"))
             )
             WebDriverWait(self.__driver, 20).until_not(
                 EC.visibility_of_element_located((By.XPATH, "//div[contains(text(), 'Loading...')]"))
             )
-        except:
+            return True
+        except Exception as ex:
+            print("Failed to load PR page: " + str(ex))
+            return False
 
+    def EditCostCenter(self, CostCenter):
+        try:
+            #trigger drop down list
+            triggerCostCenterDropDownButton = WebDriverWait(self.__driver, 30).until(
+                EC.element_to_be_clickable((By.ID, "ext-gen1358")))
+            triggerCostCenterDropDownButton.click()
+            #time.sleep(1)
 
+            __liString = "//li[contains(text()," + CostCenter + ")]" # "//li[contains(text(),'Manufacturing(二)')]"
+            selectCostCenter = self.__driver.find_element_by_xpath(__liString)
+            #time.sleep(1)
+            #scroll into view
+            self.__driver.execute_script("arguments[0].scrollIntoView();", selectCostCenter)
+            #wait until its clickable
+            WebDriverWait(self.__driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, __liString))
+            )
+            time.sleep(0.5)
+            selectCostCenter.click()
+            return True
+        except Exception as ex:
+            print("failed to select cost center: " + str(ex))
+            return False
+
+    def EditMachineNumber(self, MachineNum):
+        # 自組設備編號
+        try:
+            keyInMachineNumber = self.__driver.find_element_by_xpath("//input[@id='diyProject-inputEl']")
+            keyInMachineNumber.send_keys(MachineNum)
+
+            __liString = "//li[contains(text(), " + MachineNum +")]" # "//li[contains(text(), 'P-00678')]"
+            keyInMachineNumber = WebDriverWait(self.__driver, 30).until(
+                EC.element_to_be_clickable((By.XPATH, __liString))
+            )
+            time.sleep(0.5)
+            keyInMachineNumber.click()
+            return True
+        except Exception as ex:
+            print("Failed to edit machine number: " + str(ex))
+            return False
+
+    def EditVendorName(self, VendorName):
+        try:
+            keyinVendor = self.__driver.find_element_by_id("vendor-inputEl")
+            keyinVendor.send_keys(VendorName)
+            __bString = "//b[contains(text()," + VendorName + ")]" # "//b[contains(text(),'盛禾')]"
+            selectVendor = self.__driver.find_element_by_xpath(__bString)
+            selectVendor.click()
+            return True
+        except Exception as ex:
+            print("Failed to edit vendor name: " + str(ex))
+            return False
+
+    def EditProjectCode(self, ProjectCode):
+        try:
+            triggerFinProjectDropDownButton = WebDriverWait(self.__driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "ext-gen1400")))
+
+            triggerFinProjectDropDownButton.click()
+
+            #time.sleep(1)
+            __liString = "//li[contains(text(), " + ProjectCode + ")]" # "//li[contains(text(), '2021_電控組')]"
+            selectFinProject = WebDriverWait(self.__driver, 20).until(EC.presence_of_element_located(By.XPATH, __liString))
+            selectFinProject = self.__driver.find_element_by_xpath(
+                "//li[contains(text(), '2021_電控組')]")
+            selectFinProject.click()
+            return True
+        except Exception as ex:
+            print("Failed to edit project code: " + str(ex))
+            return False
+    
+    def TypeInReason(self, ReasonCode):
+        # Type words in the text box
+        try:
+            #"自組設備/M-Sensor/其他/羅盤檢測台車外線配線/P-00678/無"
+            self.TypeInWords_ID("reason-inputEl", ReasonCode)
+            return True
+        except Exception as ex:
+            print("Failed to edit reason code: " + str(ex))
+            return False
+    
+    def TypeInComment(self, CommentCode):
+        # Type words in the text box
+        try:
+            #"MP03_/新產品 Instinct 2，Venu 2 Plus，Venu 2S,..等產能準備/M-sensor測站，複製28台。(2021-175)/無/P-00678/量產製程部(MPPE)/陳昱仲/無"
+            self.TypeInWords_ID('prComment-inputEl', CommentCode)
+            return True
+        except Exception as ex:
+            print("Failed to edit comment code: " + str(ex))
+            return False
 
     def GetDropDownList_XPath(self, __driver, __XPath):
         time.sleep(3)
@@ -42,8 +135,8 @@ class AutoFillPRForm():
         for __element in __dropDownList:
             print(__element.get_attribute('textContent'))
 
-    def TypeInWords_ID(__driver, __id, __string):
-        __textBox = __driver.find_element_by_id(__id)
+    def TypeInWords_ID(self, __id, __string):
+        __textBox = self.__driver.find_element_by_id(__id)
         try:
             __textBox.send_keys(Keys.CONTROL + "a")
             __textBox.send_keys(Keys.DELETE)
@@ -57,6 +150,7 @@ class AutoFillPRForm():
 
     def applyForm(self):
         url = "https://shiwpa-etrex9.garmin.com:9099/FINSystem/PrApplyInit.action"
+
 
         # headless = webdriver.ChromeOptions()
         # headless.add_argument('headless')
