@@ -6,6 +6,7 @@ Created on Thu Mar 11 16:02:01 2021
 """
 
 from selenium import webdriver
+import selenium
 # from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -42,9 +43,12 @@ class AutoFillPRForm():
             triggerCostCenterDropDownButton = WebDriverWait(self.__driver, 30).until(
                 EC.element_to_be_clickable((By.ID, "ext-gen1358")))
             triggerCostCenterDropDownButton.click()
-            #time.sleep(1)
+            time.sleep(0.5)
 
             __liString = "//li[contains(text(),'" + CostCenter + "')]" # "//li[contains(text(),'Manufacturing(二)')]"
+            selectCostCenter = WebDriverWait(self.__driver, 20).until(
+                EC.presence_of_element_located((By.XPATH, __liString))
+            )
             selectCostCenter = self.__driver.find_element_by_xpath(__liString)
             #time.sleep(1)
             #scroll into view
@@ -152,24 +156,27 @@ class AutoFillPRForm():
         categoryTextBox = self.__driver.find_element_by_id("categoryL-inputEl")
         categoryTextBox.send_keys(Category) #'l-03. 自組設備-設備'
         categoryTextBox.send_keys(Keys.ENTER)
-        time.sleep(1)
+        time.sleep(2)
         
         __liString = "//li[contains(text(),'" + Category + "')]" # "//li[contains(text(),'l-03. 自組設備-設備')]"
         selectCategoryList = WebDriverWait(self.__driver, 20).until(
             EC.element_to_be_clickable((By.XPATH, __liString)))
-        
+        selectCategoryList = self.__driver.find_element_by_xpath(__liString)
+        time.sleep(2)
         selectCategoryList.click()
         
     def EditOrganization(self, Organization):
         textBoxOrg = self.__driver.find_element_by_id("divisionL-inputEl")
         try:
             textBoxOrg.send_keys(Keys.CONTROL + "a")
+            time.sleep(0.5)
             textBoxOrg.send_keys(Keys.DELETE)
+            time.sleep(0.5)
         except:
             print("Cannot Cleared")
         textBoxOrg.send_keys(Organization)
         #textBoxOrg.send_keys(Keys.ENTER)
-        time.sleep(1)
+        time.sleep(2)
         __liString = "//li[contains(text(),'" + Organization + "')]" # "//li[contains(text(),'T2-Jhongli')]"
         selectOrg = WebDriverWait(self.__driver, 40).until(
             EC.element_to_be_clickable((By.XPATH, __liString))
@@ -220,8 +227,9 @@ class AutoFillPRForm():
                 EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), '上傳附件視窗')]"))
             )
             
-            openFileSelector = self.__driver.find_element_by_xpath("//input[@id='fileAttachment-button-fileInputEl']")
+            openFileSelector = self.__driver.find_element_by_xpath("//input[@id='fileAttachment-button-fileInputEl']") #'fileAttachment-InputEl'
             openFileSelector.send_keys(FilePath)
+            time.sleep(0.5)
             selectCategory = self.__driver.find_element_by_xpath("//input[@id='fileCategoryId-inputEl']")
             '''
             Category contains following items:
@@ -235,11 +243,12 @@ class AutoFillPRForm():
             selectCategory.send_keys(Keys.DELETE)
             selectCategory.send_keys(Category)
             selectCategory.send_keys(Keys.ENTER)
-            time.sleep(1)
+            time.sleep(0.5)
 
             uploadFileButton = WebDriverWait(self.__driver, 20).until(
                 EC.element_to_be_clickable((By.XPATH, "//span[text() = '上傳']"))
             )
+            time.sleep(1)
             uploadFileButton.click()
             
             WebDriverWait(self.__driver, 30).until(

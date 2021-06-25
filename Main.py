@@ -4,12 +4,13 @@ Created on Thu Jun 24 13:29:53 2021
 
 @author: chanhayman
 """
-from enum import auto
 import AutoFillPRForm
 import OpenCSV
+import os
 
 def main():
-    openCsv = OpenCSV.OpenCSV(r"D:\Documents\_Hayman files\1_Project\羅盤\羅盤採購\T5_GigaFactory\可鑫.csv")
+    openCsv = OpenCSV.OpenCSV(
+        r"D:\Documents\_Hayman files\1_Project\Watch Bonding 3\採購\T5_GigaFactory\稼動.csv")
     openCsv.OpenFile()
     dictData = openCsv.DictData()
     '''
@@ -39,11 +40,13 @@ def main():
         autoFill.EditQuantity(row[2])
         autoFill.EditUnitPrice(row[3])
         autoFill.SaveItemInfo()
-    
     autoFill.UploadFile(dictData["Quotation"],"報價單")
-    autoFill.UploadFile(dictData["Others"], "其他")
+    autoFill.UploadFile(dictData["Others"], "報價單")
+    
+    
     autoFill.ApplyRequest()
     print("Success")
+    os.system('pause')
     
     
 if __name__ == '__main__':
