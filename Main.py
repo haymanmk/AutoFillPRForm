@@ -10,7 +10,7 @@ import os
 
 def main():
     openCsv = OpenCSV.OpenCSV(
-        r"D:\Documents\_Hayman files\1_Project\Watch Bonding 3\採購\T5_GigaFactory\稼動.csv")
+        r"D:\Documents\_Hayman files\1_Project\Labeling_Ags\採購\T5_GigaFactory\肯鑫.csv")
     openCsv.OpenFile()
     dictData = openCsv.DictData()
     '''
@@ -43,7 +43,8 @@ def main():
     autoFill.UploadFile(dictData["Quotation"],"報價單")
     autoFill.UploadFile(dictData["Others"], "報價單")
     
-    
+    #print("Please check all the items are correct...")
+    #os.system('pause')
     autoFill.ApplyRequest()
     print("Success")
     os.system('pause')

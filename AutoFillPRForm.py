@@ -13,11 +13,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
+import os
 
 class AutoFillPRForm():
     def __init__(self, url):
         self.__url = url
         self.__driver = webdriver.Chrome() #create a web driver of chrome browser
+        self.__RetryTimes = 0
+        self.__MaxRetryTimes = 3
     
     def AccessURL(self):
         # access url and open a chrome browser
@@ -59,16 +62,26 @@ class AutoFillPRForm():
             )
             time.sleep(0.5)
             selectCostCenter.click()
+            self.__RetryTimes = 0
             return True
         except Exception as ex:
             print("failed to select cost center: " + str(ex))
-            return False
+            if self.__RetryTimes < self.__MaxRetryTimes:
+                self.__RetryTimes+=1
+                self.EditCostCenter(CostCenter)
+                return
+            else:
+                self.__RetryTimes = 0
+                print("Exceed maximum retry times...")
+                os.system('pause')
+                return False
 
     def EditMachineNumber(self, MachineNum):
         # 自組設備編號
         try:
-            keyInMachineNumber = self.__driver.find_element_by_xpath("//input[@id='diyProject-inputEl']")
-            keyInMachineNumber.send_keys(MachineNum)
+            if self.__RetryTimes == 0:
+                keyInMachineNumber = self.__driver.find_element_by_xpath("//input[@id='diyProject-inputEl']")
+                keyInMachineNumber.send_keys(MachineNum)
 
             __liString = "//li[contains(text(), '" + MachineNum +"')]" # "//li[contains(text(), 'P-00678')]"
             keyInMachineNumber = WebDriverWait(self.__driver, 30).until(
@@ -76,22 +89,42 @@ class AutoFillPRForm():
             )
             time.sleep(0.5)
             keyInMachineNumber.click()
+            self.__RetryTimes = 0
             return True
         except Exception as ex:
-            print("Failed to edit machine number: " + str(ex))
-            return False
+            print("failed to select machine number: " + str(ex))
+            if self.__RetryTimes < self.__MaxRetryTimes:
+                self.__RetryTimes+=1
+                self.EditMachineNumber(MachineNum)
+                return
+            else:
+                self.__RetryTimes = 0
+                print("Exceed maximum retry times...")
+                os.system('pause')
+                return False
 
     def EditVendorName(self, VendorName):
         try:
-            keyinVendor = self.__driver.find_element_by_id("vendor-inputEl")
-            keyinVendor.send_keys(VendorName)
+            if self.__RetryTimes == 0:
+                keyinVendor = self.__driver.find_element_by_id("vendor-inputEl")
+                keyinVendor.send_keys(VendorName)
+
             __bString = "//b[contains(text(),'" + VendorName + "')]" # "//b[contains(text(),'盛禾')]"
             selectVendor = self.__driver.find_element_by_xpath(__bString)
             selectVendor.click()
+            self.__RetryTimes = 0
             return True
         except Exception as ex:
-            print("Failed to edit vendor name: " + str(ex))
-            return False
+            print("failed to select vendoe name: " + str(ex))
+            if self.__RetryTimes < self.__MaxRetryTimes:
+                self.__RetryTimes+=1
+                self.EditVendorName(VendorName)
+                return
+            else:
+                self.__RetryTimes = 0
+                print("Exceed maximum retry times...")
+                os.system('pause')
+                return False
 
     def EditProjectCode(self, ProjectCode):
         try:
@@ -117,10 +150,19 @@ class AutoFillPRForm():
                 EC.element_to_be_clickable((By.XPATH, __liString)))
             
             selectFinProject.click()
+            self.__RetryTimes = 0
             return True
         except Exception as ex:
-            print("Failed to edit project code: " + str(ex))
-            return False
+            print("failed to select project code: " + str(ex))
+            if self.__RetryTimes < self.__MaxRetryTimes:
+                self.__RetryTimes+=1
+                self.EditProjectCode(ProjectCode)
+                return
+            else:
+                self.__RetryTimes = 0
+                print("Exceed maximum retry times...")
+                os.system('pause')
+                return False
     
     def TypeInReason(self, ReasonCode):
         # Type words in the text box
@@ -153,17 +195,32 @@ class AutoFillPRForm():
         addLine.click()
     
     def EditCategory(self, Category):
-        categoryTextBox = self.__driver.find_element_by_id("categoryL-inputEl")
-        categoryTextBox.send_keys(Category) #'l-03. 自組設備-設備'
-        categoryTextBox.send_keys(Keys.ENTER)
-        time.sleep(2)
-        
-        __liString = "//li[contains(text(),'" + Category + "')]" # "//li[contains(text(),'l-03. 自組設備-設備')]"
-        selectCategoryList = WebDriverWait(self.__driver, 20).until(
-            EC.element_to_be_clickable((By.XPATH, __liString)))
-        selectCategoryList = self.__driver.find_element_by_xpath(__liString)
-        time.sleep(2)
-        selectCategoryList.click()
+        try:
+            if self.__RetryTimes == 0:
+                categoryTextBox = self.__driver.find_element_by_id("categoryL-inputEl")
+                categoryTextBox.send_keys(Category) #'l-03. 自組設備-設備'
+                categoryTextBox.send_keys(Keys.ENTER)
+                time.sleep(1)
+            
+            __liString = "//li[contains(text(),'" + Category + "')]" # "//li[contains(text(),'l-03. 自組設備-設備')]"
+            selectCategoryList = WebDriverWait(self.__driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, __liString)))
+            selectCategoryList = self.__driver.find_element_by_xpath(__liString)
+            time.sleep(1)
+            selectCategoryList.click()
+            self.__RetryTimes = 0
+            return True
+        except Exception as ex:
+            print("failed to select category: " + str(ex))
+            if self.__RetryTimes < self.__MaxRetryTimes:
+                self.__RetryTimes+=1
+                self.EditCategory(Category)
+                return
+            else:
+                self.__RetryTimes = 0
+                print("Exceed maximum retry times...")
+                os.system('pause')
+                return False
         
     def EditOrganization(self, Organization):
         textBoxOrg = self.__driver.find_element_by_id("divisionL-inputEl")
@@ -174,14 +231,29 @@ class AutoFillPRForm():
             time.sleep(0.5)
         except:
             print("Cannot Cleared")
-        textBoxOrg.send_keys(Organization)
-        #textBoxOrg.send_keys(Keys.ENTER)
-        time.sleep(2)
-        __liString = "//li[contains(text(),'" + Organization + "')]" # "//li[contains(text(),'T2-Jhongli')]"
-        selectOrg = WebDriverWait(self.__driver, 40).until(
-            EC.element_to_be_clickable((By.XPATH, __liString))
-        )
-        selectOrg.click()
+        
+        try:
+            textBoxOrg.send_keys(Organization)
+            #textBoxOrg.send_keys(Keys.ENTER)
+            time.sleep(1)
+            __liString = "//li[contains(text(),'" + Organization + "')]" # "//li[contains(text(),'T2-Jhongli')]"
+            selectOrg = WebDriverWait(self.__driver, 40).until(
+                EC.element_to_be_clickable((By.XPATH, __liString))
+            )
+            selectOrg.click()
+            self.__RetryTimes = 0
+            return True
+        except Exception as ex:
+            print("failed to select organization: " + str(ex))
+            if self.__RetryTimes < self.__MaxRetryTimes:
+                self.__RetryTimes+=1
+                self.EditOrganization(Organization)
+                return
+            else:
+                self.__RetryTimes = 0
+                print("Exceed maximum retry times...")
+                os.system('pause')
+                return False
 
     def EditNeedDate(self, NeedDate):
         self.TypeInWords_ID("needByDateL-inputEl", NeedDate)
@@ -210,10 +282,19 @@ class AutoFillPRForm():
             )
             '''
             time.sleep(1)
+            self.__RetryTimes = 0
             return True
         except Exception as ex:
             print("Failed to save item's infomation: " + str(ex))
-            return False
+            if self.__RetryTimes < self.__MaxRetryTimes:
+                self.__RetryTimes+=1
+                self.SaveItemInfo()
+                return
+            else:
+                self.__RetryTimes = 0
+                print("Exceed maximum retry times...")
+                os.system('pause')
+                return False
 
     def UploadFile(self, FilePath, Category):
         # Upload Files
