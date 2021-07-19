@@ -46,7 +46,11 @@ class OpenCSV():
     def FindHeader(self, Row):
         for header in HeaderName.keys():
             __index = self.FindIndex(Row,header)
-            if __index >= 0 and header != "類別":
+            if __index >= 0 and header == "報價單":
+                keyName = HeaderName.get(header)
+                self.__dictData[keyName] = Row[__index+1:]
+                return 0
+            elif __index >= 0 and header != "類別":
                 keyName = HeaderName.get(header)
                 self.__dictData[keyName] = Row[__index+1]
                 return 0

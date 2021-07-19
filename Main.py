@@ -10,9 +10,10 @@ import os
 
 def main():
     openCsv = OpenCSV.OpenCSV(
-        r"D:\Documents\_Hayman files\1_Project\Labeling_Ags\採購\T5_GigaFactory\肯鑫.csv")
+        r"D:\Documents\_Hayman files\1_Project\Watch Bonding 3\採購\2021\運輸費用\巨發.csv")
     openCsv.OpenFile()
     dictData = openCsv.DictData()
+    
     '''
     CostCenter = "Manufacturing(一)"
     MachineNumber = "P-00727"
@@ -24,9 +25,11 @@ def main():
     autoFill = AutoFillPRForm.AutoFillPRForm(url)
     autoFill.AccessURL()
     autoFill.EditCostCenter(dictData["CostCenter"])
-    autoFill.EditMachineNumber(dictData["MachineNumber"])
+    if dictData["MachineNumber"]:
+        autoFill.EditMachineNumber(dictData["MachineNumber"])
     autoFill.EditVendorName(dictData["VendorName"])
-    autoFill.EditProjectCode(dictData["ProjectCode"])
+    if dictData["ProjectCode"]:
+        autoFill.EditProjectCode(dictData["ProjectCode"])
     autoFill.TypeInReason(dictData["Reason"])
     autoFill.TypeInComment(dictData["Comment"])
     
@@ -40,7 +43,10 @@ def main():
         autoFill.EditQuantity(row[2])
         autoFill.EditUnitPrice(row[3])
         autoFill.SaveItemInfo()
-    autoFill.UploadFile(dictData["Quotation"],"報價單")
+    quotationFiles = dictData["Quotation"]
+    for __filePath in quotationFiles:
+        if __filePath:
+            autoFill.UploadFile(__filePath,"報價單")
     autoFill.UploadFile(dictData["Others"], "報價單")
     
     #print("Please check all the items are correct...")
