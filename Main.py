@@ -10,7 +10,7 @@ import os
 
 def main():
     openCsv = OpenCSV.OpenCSV(
-        r"D:\Documents\_Hayman files\1_Project\Watch Bonding 3\採購\2021\運輸費用\巨發.csv")
+        r"D:\Documents\_Hayman files\1_Project\Labeling_Ags\採購\T5_GigaFactory\五金電料\可鑫\歐式端子\可鑫.csv")
     openCsv.OpenFile()
     dictData = openCsv.DictData()
     

@@ -83,7 +83,7 @@ class AutoFillPRForm():
                 keyInMachineNumber = self.__driver.find_element_by_xpath("//input[@id='diyProject-inputEl']")
                 keyInMachineNumber.send_keys(MachineNum)
 
-            __liString = "//li[contains(text(), '" + MachineNum +"')]" # "//li[contains(text(), 'P-00678')]"
+            __liString = "//div[contains(text(), '" + MachineNum +"')]" # "//li[contains(text(), 'P-00678')]"
             keyInMachineNumber = WebDriverWait(self.__driver, 30).until(
                 EC.element_to_be_clickable((By.XPATH, __liString))
             )
