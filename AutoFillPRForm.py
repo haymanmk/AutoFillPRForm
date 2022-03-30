@@ -6,6 +6,11 @@ Created on Thu Mar 11 16:02:01 2021
 """
 
 from selenium import webdriver
+import chromedriver_autoinstaller
+chromedriver_autoinstaller.install(True)  # Check if the current version of chromedriver exists
+                                      # and if it doesn't exist, download it automatically,
+                                      # then add chromedriver to path
+
 import selenium
 # from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
@@ -108,6 +113,7 @@ class AutoFillPRForm():
             if self.__RetryTimes == 0:
                 keyinVendor = self.__driver.find_element_by_id("vendor-inputEl")
                 keyinVendor.send_keys(VendorName)
+                keyinVendor.send_keys(Keys.DOWN)
 
             __bString = "//b[contains(text(),'" + VendorName + "')]" # "//b[contains(text(),'盛禾')]"
             selectVendor = self.__driver.find_element_by_xpath(__bString)
@@ -296,7 +302,7 @@ class AutoFillPRForm():
                 os.system('pause')
                 return False
 
-    def UploadFile(self, FilePath, Category):
+    def UploadFile(self, FilePath, Category, Comment=""):
         # Upload Files
         try:
             triggerUploadFiles = WebDriverWait(self.__driver, 20).until(
@@ -310,8 +316,18 @@ class AutoFillPRForm():
             
             openFileSelector = self.__driver.find_element_by_xpath("//input[@id='fileAttachment-button-fileInputEl']") #'fileAttachment-InputEl'
             openFileSelector.send_keys(FilePath)
+
+            if Comment:
+                openFileSelector = self.__driver.find_element_by_xpath("//input[@id='fileComments-inputEl']") #'fileAttachment-InputEl'
+                openFileSelector.send_keys(Comment)
+
             time.sleep(0.5)
-            selectCategory = self.__driver.find_element_by_xpath("//input[@id='fileCategoryId-inputEl']")
+            # selectCategory = self.__driver.find_element_by_xpath("//input[@id='fileCategoryId-inputEl']")
+            selectCategory = WebDriverWait(self.__driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, "//*[@id='fileCategoryId-triggerWrap']/tbody/tr/td[2]"))
+            )
+            time.sleep(0.5)
+            selectCategory.click()
             '''
             Category contains following items:
             1) 報價單
@@ -320,10 +336,15 @@ class AutoFillPRForm():
             4) 其他
             5) 出貨單
             '''
-            selectCategory.send_keys(Keys.CONTROL + "a")
-            selectCategory.send_keys(Keys.DELETE)
-            selectCategory.send_keys(Category)
-            selectCategory.send_keys(Keys.ENTER)
+            selectCategory = WebDriverWait(self.__driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, "//li[contains(text(), '%s')]" % Category))
+            )
+            time.sleep(0.5)
+            selectCategory.click()
+            # selectCategory.send_keys(Keys.CONTROL + "a")
+            # selectCategory.send_keys(Keys.DELETE)
+            # selectCategory.send_keys(Category)
+            # selectCategory.send_keys(Keys.ENTER)
             time.sleep(0.5)
 
             uploadFileButton = WebDriverWait(self.__driver, 20).until(

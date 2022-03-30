@@ -4,13 +4,15 @@ Created on Thu Jun 24 13:29:53 2021
 
 @author: chanhayman
 """
+from turtle import delay
 import AutoFillPRForm
 import OpenCSV
 import os
+import time
 
 def main():
     openCsv = OpenCSV.OpenCSV(
-        r"D:\Documents\_Hayman files\1_Project\Labeling_Ags\採購\T5_GigaFactory\五金電料\可鑫\歐式端子\可鑫.csv")
+        r"D:\Documents\_Hayman files\1_Project\羅盤\羅盤採購\T5_GigaFactory\T5-Q3\敦華.csv")
     openCsv.OpenFile()
     dictData = openCsv.DictData()
     
@@ -27,6 +29,7 @@ def main():
     autoFill.EditCostCenter(dictData["CostCenter"])
     if dictData["MachineNumber"]:
         autoFill.EditMachineNumber(dictData["MachineNumber"])
+    # time.sleep(1)
     autoFill.EditVendorName(dictData["VendorName"])
     if dictData["ProjectCode"]:
         autoFill.EditProjectCode(dictData["ProjectCode"])
@@ -47,7 +50,7 @@ def main():
     for __filePath in quotationFiles:
         if __filePath:
             autoFill.UploadFile(__filePath,"報價單")
-    autoFill.UploadFile(dictData["Others"], "報價單")
+    autoFill.UploadFile(dictData["Others"], "其他")
     
     #print("Please check all the items are correct...")
     #os.system('pause')
