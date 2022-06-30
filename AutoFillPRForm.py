@@ -57,7 +57,10 @@ class AutoFillPRForm():
             selectCostCenter = WebDriverWait(self.__driver, 20).until(
                 EC.presence_of_element_located((By.XPATH, __liString))
             )
-            selectCostCenter = self.__driver.find_element_by_xpath(__liString)
+            selectCostCenter = WebDriverWait(self.__driver, 20).until(
+                EC.element_to_be_clickable((By.XPATH, __liString))
+            )
+            # selectCostCenter = self.__driver.find_element_by_xpath(__liString)
             #time.sleep(1)
             #scroll into view
             self.__driver.execute_script("arguments[0].scrollIntoView();", selectCostCenter)
@@ -85,7 +88,7 @@ class AutoFillPRForm():
         # 自組設備編號
         try:
             if self.__RetryTimes == 0:
-                keyInMachineNumber = self.__driver.find_element_by_xpath("//input[@id='diyProject-inputEl']")
+                keyInMachineNumber = self.__driver.find_element('xpath',"//input[@id='diyProject-inputEl']")
                 keyInMachineNumber.send_keys(MachineNum)
 
             __liString = "//div[contains(text(), '" + MachineNum +"')]" # "//li[contains(text(), 'P-00678')]"
@@ -111,17 +114,17 @@ class AutoFillPRForm():
     def EditVendorName(self, VendorName):
         try:
             if self.__RetryTimes == 0:
-                keyinVendor = self.__driver.find_element_by_id("vendor-inputEl")
+                keyinVendor = self.__driver.find_element('id',"vendor-inputEl")
                 keyinVendor.send_keys(VendorName)
-                keyinVendor.send_keys(Keys.DOWN)
+                # keyinVendor.send_keys(Keys.DOWN)
 
             __bString = "//b[contains(text(),'" + VendorName + "')]" # "//b[contains(text(),'盛禾')]"
-            selectVendor = self.__driver.find_element_by_xpath(__bString)
+            selectVendor = self.__driver.find_element('xpath',__bString)
             selectVendor.click()
             self.__RetryTimes = 0
             return True
         except Exception as ex:
-            print("failed to select vendoe name: " + str(ex))
+            print("failed to select vendor name: " + str(ex))
             if self.__RetryTimes < self.__MaxRetryTimes:
                 self.__RetryTimes+=1
                 self.EditVendorName(VendorName)
@@ -135,7 +138,7 @@ class AutoFillPRForm():
     def EditProjectCode(self, ProjectCode):
         try:
             '''
-            keyInProjectCode = self.__driver.find_element_by_id('project-inputEl')
+            keyInProjectCode = self.__driver.find_element('id','project-inputEl')
             keyInProjectCode.send_keys(Keys.CONTROL + "a")
             keyInProjectCode.send_keys(Keys.DELETE)
             keyInProjectCode.send_keys(ProjectCode)
@@ -149,7 +152,7 @@ class AutoFillPRForm():
             #time.sleep(1)
             __liString = "//li[contains(text(), '" + ProjectCode + "')]" # "//li[contains(text(), '2021_電控組')]"
             #selectFinProject = WebDriverWait(self.__driver, 20).until(EC.presence_of_element_located(By.XPATH, __liString))
-            selectFinProject = self.__driver.find_element_by_xpath(__liString)
+            selectFinProject = self.__driver.find_element('xpath',__liString)
             self.__driver.execute_script("arguments[0].scrollIntoView();", selectFinProject)
             time.sleep(0.5)
             selectFinProject = WebDriverWait(self.__driver, 20).until(
@@ -192,7 +195,7 @@ class AutoFillPRForm():
 
     def AddLineInList(self):
         # Append items for purchasing
-        addLine = self.__driver.find_element_by_id('addLine-btnInnerEl')
+        addLine = self.__driver.find_element('id','addLine-btnInnerEl')
         self.__driver.execute_script("arguments[0].scrollIntoView();", addLine)
         # Append items for purchasing
         addLine = WebDriverWait(self.__driver, 60).until(
@@ -203,7 +206,7 @@ class AutoFillPRForm():
     def EditCategory(self, Category):
         try:
             if self.__RetryTimes == 0:
-                categoryTextBox = self.__driver.find_element_by_id("categoryL-inputEl")
+                categoryTextBox = self.__driver.find_element('id',"categoryL-inputEl")
                 categoryTextBox.send_keys(Category) #'l-03. 自組設備-設備'
                 categoryTextBox.send_keys(Keys.ENTER)
                 time.sleep(1)
@@ -211,7 +214,7 @@ class AutoFillPRForm():
             __liString = "//li[contains(text(),'" + Category + "')]" # "//li[contains(text(),'l-03. 自組設備-設備')]"
             selectCategoryList = WebDriverWait(self.__driver, 20).until(
                 EC.element_to_be_clickable((By.XPATH, __liString)))
-            selectCategoryList = self.__driver.find_element_by_xpath(__liString)
+            selectCategoryList = self.__driver.find_element('xpath',__liString)
             time.sleep(1)
             selectCategoryList.click()
             self.__RetryTimes = 0
@@ -229,7 +232,7 @@ class AutoFillPRForm():
                 return False
         
     def EditOrganization(self, Organization):
-        textBoxOrg = self.__driver.find_element_by_id("divisionL-inputEl")
+        textBoxOrg = self.__driver.find_element('id',"divisionL-inputEl")
         try:
             textBoxOrg.send_keys(Keys.CONTROL + "a")
             time.sleep(0.5)
@@ -242,7 +245,7 @@ class AutoFillPRForm():
             textBoxOrg.send_keys(Organization)
             #textBoxOrg.send_keys(Keys.ENTER)
             time.sleep(1)
-            __liString = "//li[contains(text(),'" + Organization + "')]" # "//li[contains(text(),'T2-Jhongli')]"
+            __liString = "//div[contains(text(),'" + Organization + "')]" # "//li[contains(text(),'T2-Jhongli')]"
             selectOrg = WebDriverWait(self.__driver, 40).until(
                 EC.element_to_be_clickable((By.XPATH, __liString))
             )
@@ -278,9 +281,9 @@ class AutoFillPRForm():
     
     def SaveItemInfo(self):
         try:
-            saveButton = self.__driver.find_element_by_xpath(
+            saveButton = self.__driver.find_element('xpath',
             "//div[@class='x-toolbar x-docked x-toolbar-footer x-docked-bottom x-toolbar-docked-bottom x-toolbar-footer-docked-bottom x-box-layout-ct']//span[@class='x-btn-wrap']/span[@class='x-btn-button']/span[text() = '儲存']")
-            saveButton.find_element_by_xpath("..").click()
+            saveButton.find_element('xpath',"..").click()
             
             '''
             WebDriverWait(self.__driver, 20).until_not(
@@ -314,11 +317,11 @@ class AutoFillPRForm():
                 EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), '上傳附件視窗')]"))
             )
             
-            openFileSelector = self.__driver.find_element_by_xpath("//input[@id='fileAttachment-button-fileInputEl']") #'fileAttachment-InputEl'
+            openFileSelector = self.__driver.find_element('xpath',"//input[@id='fileAttachment-button-fileInputEl']") #'fileAttachment-InputEl'
             openFileSelector.send_keys(FilePath)
 
             if Comment:
-                openFileSelector = self.__driver.find_element_by_xpath("//input[@id='fileComments-inputEl']") #'fileAttachment-InputEl'
+                openFileSelector = self.__driver.find_element('xpath',"//input[@id='fileComments-inputEl']") #'fileAttachment-InputEl'
                 openFileSelector.send_keys(Comment)
 
             time.sleep(0.5)
@@ -370,7 +373,7 @@ class AutoFillPRForm():
         EC.element_to_be_clickable((By.XPATH, "//span[text() = '開始傳簽']"))
         )
         time.sleep(1)
-        applyRequest.find_element_by_xpath("..").click()
+        applyRequest.find_element('xpath',"..").click()
 
         waitApplySuccess = WebDriverWait(self.__driver, 60).until(
             EC.presence_of_element_located((By.XPATH, "//span[text() = '完成']"))
@@ -379,13 +382,13 @@ class AutoFillPRForm():
     def GetDropDownList_XPath(self, __driver, __XPath):
         time.sleep(3)
         __driver.implicitly_wait(10)
-        __dropDownList = __driver.find_element_by_xpath(__XPath)
+        __dropDownList = __driver.find_element('xpath',__XPath)
 
         for __element in __dropDownList:
             print(__element.get_attribute('textContent'))
 
     def TypeInWords_ID(self, __id, __string):
-        __textBox = self.__driver.find_element_by_id(__id)
+        __textBox = self.__driver.find_element('id',__id)
         try:
             __textBox.send_keys(Keys.CONTROL + "a")
             __textBox.send_keys(Keys.DELETE)

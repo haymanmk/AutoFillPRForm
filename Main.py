@@ -12,7 +12,7 @@ import time
 
 def main():
     openCsv = OpenCSV.OpenCSV(
-        r"D:\Documents\_Hayman files\1_Project\羅盤\羅盤採購\T5_GigaFactory\T5-Q3\敦華.csv")
+        r"C:\Users\chanhayman\Documents\_Hayman files\1_Project\羅盤\羅盤採購\T5_GigaFactory\T5-Q3\運輸費用\巨發.csv")
     openCsv.OpenFile()
     dictData = openCsv.DictData()
     
