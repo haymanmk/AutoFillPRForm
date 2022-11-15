@@ -19,7 +19,7 @@ In addition, the knowledge of **XPath** and basic **python programming skills** 
 
 ## :bug:What is Selenium?
 
-"***Selenium automates browsers. That's it!***", quote from [Selenium](https://www.selenium.dev/) website. In order to automate the tedious work on filling the PR (in short of Purchase Request) form, this project implements Selenium to search for target elements, like input boxes, drop list, buttons, etc., in the PR form and commit actions on them to mimic the process people work by.
+"***Selenium automates browsers. That's it!***", quote from [Selenium](https://www.selenium.dev/) website. In order to automate the tedious work on filling the PR (in short of Purchase Request) form, this project implements Selenium to search for target elements, like input boxes, drop list, buttons, etc., in the PR form and commit actions on them to mimic how people work on it.
 
 
 
