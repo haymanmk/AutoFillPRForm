@@ -63,7 +63,7 @@ Selenium just removed `find_element_by_*` and `find_elements_by_*` in version `4
 
 #### Solution
 
-Update the Selenium to latest version.
+Update the Selenium to latest version and remove function ``find_element_by_*`` used in the program.
 
 
 
